@@ -32,6 +32,21 @@ const main = async () => {
    let dmanDomainRecord = await domainContract.getRecord("rajkamal");
    console.log("Owner REecord ", dmanDomainRecord);
 
+    // Let's look in their wallet so we can compare later
+  let ownerBalance = await hre.ethers.provider.getBalance(owner.address);
+  console.log("Balance of owner before withdrawal:", hre.ethers.utils.formatEther(ownerBalance));
+
+  // Oops, looks like the owner is saving their money!
+  let newtxnV = await domainContract.connect(owner).withdraw();
+  await newtxnV.wait();
+  
+  // Fetch balance of contract & owner
+  let contractBalance = await hre.ethers.provider.getBalance(domainContract.address);
+  ownerBalance = await hre.ethers.provider.getBalance(owner.address);
+
+  console.log("Contract balance after withdrawal:", hre.ethers.utils.formatEther(contractBalance));
+  console.log("Balance of owner after withdrawal:", hre.ethers.utils.formatEther(ownerBalance));
+
 
 }
 
